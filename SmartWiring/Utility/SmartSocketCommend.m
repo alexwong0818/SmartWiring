@@ -168,7 +168,7 @@
  获取数据源的第六位-标识码字段
  兼判断包的正确性，不正确则直接返回cmd_null
  
- Check verify in the datagram.Return the correct verify code or cmd_null
+ Check the verify in datagram.Return the correct verify enumerated or cmd_null
  */
 +(SSCmdType)getCmdType:(Byte*)data
 {
