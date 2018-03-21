@@ -32,14 +32,6 @@
 {
     
     sendDic = [[NSMutableDictionary alloc] init];
-    
-//    [self initDemoData];
-//        [self initDemoData];
-    
-//    NSMutableArray *array = [DBhelper searchBy:@"Device"];
-//    if (array.count == 0) {
-//        [self initDemoData];
-//    }
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.

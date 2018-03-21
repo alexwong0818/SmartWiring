@@ -12,10 +12,11 @@
 @implementation SmartSocketCommend
 
 /*
- 组帧(第一段)
-
+ 组帧(第1段)
+ Create datagram(First part)
  帧头      功能码     数据长度      数据      校验位     帧尾
- 2b         1b          2b       unknow      1b       2b
+ head      func      length     data      verify    foot
+ 2b         1b         2b       unknow      1b       2b
  $$       0x05       data len     data      0x00      ##
  */
 
@@ -23,28 +24,28 @@
 {
     int iIndex = 0;
     //根据长度计算出最终包的大小，并创建数组
-    
+    //Calculate length for create array.
     long iLastLen = 2+1+2+data.count+1+2;
     
     CustomArray buffer = [Global getArrayByCount:iLastLen];
-    //帧头
+    //帧头 head
     buffer.byteArray[iIndex++] = DEF_HEAD;
     buffer.byteArray[iIndex++] = DEF_HEAD;
-    //功能码
+    //功能码 func code
     buffer.byteArray[iIndex++] = DEF_SMARTSOCKET;
     
-    //长度
+    //长度 length
     buffer.byteArray[iIndex++] = [Global getLow:data.count];
     buffer.byteArray[iIndex++] = [Global getHigh:data.count];
  
-    //数据
+    //数据 data
     for (int i = 0;i < data.count;i++) {
         buffer.byteArray[iIndex++] = data.byteArray[i];
     }
     
-    //校验码
+    //校验码 verify
     buffer.byteArray[iIndex++] = DEF_CHECKBIT;
-    //帧尾
+    //帧尾 foot
     buffer.byteArray[iIndex++] = DEF_END;
     buffer.byteArray[iIndex++] = DEF_END;
     
@@ -52,7 +53,7 @@
         NSLog(@"buffer  %x",buffer.byteArray[i]);
     }
     
-    //释放数据段
+    //释放数据段 release data array && return datagram
     free(data.byteArray);
     return buffer;
 }
@@ -60,6 +61,7 @@
 
 /*
  数据帧 （第二段）
+ datagram second part
  symbol(1byte) + len(2byte) + date(N byte)
  */
 +(CustomArray)createDataFrames:(Byte)funId datas:(CustomArray)datas
@@ -79,6 +81,7 @@
 
 /*
  查询设备信息
+ fetch device's info
  */
 +(CustomArray)fetchDeviceInfo:(NSString*)mac
 {
@@ -88,6 +91,7 @@
 
 /*
  查询设备状态
+ fetch device's statu
  */
 
 +(CustomArray)fetchDeviceStat:(NSString*)mac
@@ -98,6 +102,7 @@
 
 /*
  查询设备版本
+ fetch device's version
  */
 +(CustomArray)fetchDeviceVersion:(NSString*)mac
 {
@@ -107,6 +112,7 @@
 
 /*
  查询功率
+ fetch device's power
  */
 +(CustomArray)fetchDevicePower:(NSString*)mac
 {
@@ -116,6 +122,7 @@
 
 /*
  发送控制插座开
+ send turn on cmd
  */
 +(CustomArray)createTurnOnCmd:(NSString*)mac
 {
@@ -125,6 +132,7 @@
 
 /*
  发送控制插座关
+ send turn off cmd
  */
 +(CustomArray)createTurnOffCmd:(NSString*)mac
 {
@@ -134,6 +142,7 @@
 
 /*
     只创建长度+mac地址
+ create macaddress
  */
 +(CustomArray)createMacAddressCmd:(NSString*)mac
 {
@@ -158,6 +167,8 @@
 /*
  获取数据源的第六位-标识码字段
  兼判断包的正确性，不正确则直接返回cmd_null
+ 
+ Check verify in the datagram.Return the correct verify code or cmd_null
  */
 +(SSCmdType)getCmdType:(Byte*)data
 {
@@ -206,6 +217,7 @@
 
 /*
  检查帧头、帧尾、功能码和命令类型标志功能
+ Check datagram head、foot、func code & command type
  */
 
 +(BOOL)checkAvailable:(Byte*)data
